@@ -1,0 +1,7 @@
+node_modules/
+assets/video/raw/
+assets/src/
+screenshots/
+dist/
+tools/bin/
+test-results/

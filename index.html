@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Airsoft Field Warzone – еърсофт, гел бластери и тактически събития</title>
+<meta name="description" content="Еърсофт игри, гел бластери за деца, тиймбилдинг, ергенски партита, залавяне на младоженец и сватбен ескорт. Airsoft Field Warzone – влезте в бойната зона.">
+<meta name="theme-color" content="#0a0b08">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Airsoft Field Warzone">
+<meta property="og:description" content="Еърсофт, гел бластери и незабравими тактически събития.">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Exo+2:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Russo+One&display=swap&subset=cyrillic" rel="stylesheet">
+<link rel="preload" as="image" href="assets/video/hero-desktop-poster.webp" media="(min-width: 821px)">
+<link rel="preload" as="image" href="assets/video/hero-mobile-poster.webp" media="(max-width: 820px)">
+<link rel="stylesheet" href="css/style.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<!-- ===================== SVG БИБЛИОТЕКА ===================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Мишена-силует (IPSC стил). Зоните се изчисляват в js/range.js -->
+    <symbol id="target" viewBox="0 0 100 150">
+      <rect x="35" y="4" width="30" height="31" rx="7" class="t-paper"/>
+      <path d="M30 38h40l25 22v86H5V60z" class="t-paper"/>
+      <path d="M25 45h50v70H25z" class="t-zone"/>
+      <path d="M38 52h24v40H38z" class="t-zone t-a"/>
+      <rect x="41" y="11" width="18" height="17" rx="3" class="t-zone t-a"/>
+      <path d="M50 48v62M28 72h44" class="t-cross"/>
+      <circle cx="50" cy="72" r="3.4" class="t-dot"/>
+    </symbol>
+    <!-- Генерични силуети на войници -->
+    <symbol id="sil-aim" viewBox="0 0 240 320">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke-width="46" d="M152 76l6 82"/>
+        <path stroke-width="21" d="M154 160l-14 68-8 66M162 160l14 66 12 68"/>
+        <path stroke-width="8" d="M150 84L28 92"/><path stroke-width="12" d="M62 89l46-3M150 83l26 2"/>
+        <path stroke-width="9" d="M100 92l-4 22M112 80l20-1"/>
+        <path stroke-width="14" d="M166 82l8 24-46-8M142 80l-30 22-30-10"/>
+      </g>
+      <g fill="currentColor"><circle cx="142" cy="52" r="15"/><path d="M122 50a20 18 0 0 1 40-4l3 6h-45z"/><path d="M118 290h26l2 12h-32zM178 290h22l4 12h-28z"/></g>
+    </symbol>
+    <symbol id="sil-kneel" viewBox="0 0 240 270">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke-width="46" d="M150 136l10 70"/>
+        <path stroke-width="21" d="M152 206l-44-4 6 52"/>
+        <path stroke-width="20" d="M164 210l18 44 46 2"/>
+        <path stroke-width="8" d="M148 144L26 152"/><path stroke-width="12" d="M60 149l46-3M148 143l26 2"/>
+        <path stroke-width="9" d="M98 152l-4 22M110 140l20-1"/>
+        <path stroke-width="14" d="M164 142l8 24-46-8M140 140l-30 22-30-10"/>
+      </g>
+      <g fill="currentColor"><circle cx="140" cy="112" r="15"/><path d="M120 110a20 18 0 0 1 40-4l3 6h-45z"/><path d="M100 250h26l2 12h-32z"/></g>
+    </symbol>
+    <symbol id="sil-patrol" viewBox="0 0 200 320">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke-width="46" d="M112 66l6 86"/>
+        <path stroke-width="26" d="M138 76l4 52"/>
+        <path stroke-width="21" d="M114 154l-20 66-14 70M122 154l16 68 12 70"/>
+        <path stroke-width="8" d="M148 104L56 166"/><path stroke-width="12" d="M76 152l34-22"/><path stroke-width="9" d="M108 138l12 16"/>
+        <path stroke-width="14" d="M126 74l10 36-12 16M102 74l-12 40-10 34"/>
+      </g>
+      <g fill="currentColor"><circle cx="110" cy="40" r="15"/><path d="M90 38a20 18 0 0 1 40-4l3 6H90z"/><path d="M66 286h26l2 12H64zM140 288h22l4 12h-28z"/></g>
+    </symbol>
+    <!-- Иконки -->
+    <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></symbol>
+    <symbol id="i-viber" viewBox="0 0 24 24"><path fill="currentColor" d="M11.4 1.5c-3.3 0-6.2.4-7.8 1.9C2.4 4.5 2 6.3 2 8.6v3c0 2.3.4 4.1 1.6 5.2.7.6 1.6 1.1 2.7 1.4v3.4c0 .4.5.6.8.3l2.9-3.2c.5 0 1 .1 1.5.1 3.3 0 6.2-.4 7.8-1.9 1.2-1.1 1.6-2.9 1.6-5.2v-3c0-2.3-.4-4.1-1.6-5.2C17.7 1.9 14.7 1.5 11.4 1.5zm-3 4.3c.3 0 .6.1.8.4l1 1.5c.3.4.2 1-.2 1.3l-.5.4c-.2.2-.3.5-.1.8.6 1.3 1.6 2.4 2.9 3 .3.1.6.1.8-.1l.4-.5c.3-.4.9-.5 1.3-.2l1.5 1c.4.3.5.9.2 1.3l-.5.7c-.4.5-1 .7-1.6.6-3.4-.8-6-3.4-6.8-6.8-.1-.6.1-1.2.6-1.6l.7-.5c.1-.2.3-.3.5-.3zm4-.6c2.5.1 4.5 2.1 4.6 4.6 0 .2-.2.4-.4.4s-.4-.2-.4-.4c-.1-2-1.8-3.7-3.8-3.8-.2 0-.4-.2-.4-.4s.2-.4.4-.4zm.1 1.6c1.6.1 2.9 1.4 3 3 0 .2-.2.4-.4.4s-.4-.2-.4-.4c-.1-1.2-1-2.1-2.2-2.2-.2 0-.4-.2-.4-.4s.2-.4.4-.4zm.1 1.6c.7.1 1.3.7 1.4 1.4 0 .2-.2.4-.4.4s-.4-.2-.4-.4c-.1-.3-.3-.5-.6-.6-.2 0-.4-.2-.4-.4s.2-.4.4-.4z"/></symbol>
+    <symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.6V14h2.8v8z"/></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><path fill="currentColor" d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6-7.9a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0zM21.9 8c-.1-1.6-.4-3-1.6-4.2S17.6 2.2 16 2.1C14.4 2 9.6 2 8 2.1c-1.6.1-3 .4-4.2 1.6S2.2 6.4 2.1 8C2 9.6 2 14.4 2.1 16c.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 6.4.1 8 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-6.4 0-8zm-2.1 9.8a3.3 3.3 0 0 1-1.8 1.8c-1.3.5-4.3.4-5.7.4s-4.4.1-5.7-.4a3.3 3.3 0 0 1-1.8-1.8c-.5-1.3-.4-4.3-.4-5.7s-.1-4.4.4-5.7a3.3 3.3 0 0 1 1.8-1.8C7.9 4.1 10.9 4.2 12 4.2s4.4-.1 5.7.4a3.3 3.3 0 0 1 1.8 1.8c.5 1.3.4 4.3.4 5.7s.1 4.4-.4 5.7z"/></symbol>
+    <symbol id="i-tiktok" viewBox="0 0 24 24"><path fill="currentColor" d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.8 5.8 0 1 0 5 5.7V9.1a7.4 7.4 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.3-1.6z"/></symbol>
+    <symbol id="i-sound-on" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></symbol>
+    <symbol id="i-sound-off" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9zm18.4 0L20 7.6 17.6 10 15.2 7.6 13.8 9l2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4-2.4-2.4z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M4 12.5l5 5L20 6.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" d="M5 12h13M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><path fill="currentColor" d="M3 5h18c.6 0 1 .4 1 1v12c0 .6-.4 1-1 1H3c-.6 0-1-.4-1-1V6c0-.6.4-1 1-1zm9 7.2L4.3 7H4v.9l8 5.4 8-5.4V7h-.3z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#about">Към съдържанието</a>
+
+<!-- ===================== НАВИГАЦИЯ ===================== -->
+<header class="nav" id="nav">
+  <a href="#top" class="nav-logo" aria-label="Airsoft Field Warzone – начало">
+    <img src="assets/img/logo-mark.webp" alt="" width="240" height="154">
+    <span class="nav-brand"><b>AIRSOFT FIELD</b><i>WARZONE</i></span>
+  </a>
+  <nav class="nav-links" id="navLinks" aria-label="Основна навигация">
+    <a href="#about"><small>01</small>Кои сме</a>
+    <a href="#events"><small>02</small>Събития</a>
+    <a href="#services"><small>03</small>Услуги</a>
+    <a href="#process"><small>04</small>Как протича</a>
+    <a href="#gallery"><small>06</small>Галерия</a>
+    <a href="#vouchers"><small>07</small>Ваучери</a>
+    <a href="#faq"><small>08</small>ЧЗВ</a>
+    <a href="#contact"><small>09</small>Контакти</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="sound-btn" id="soundBtn" type="button" aria-pressed="false" title="Звукови ефекти">
+      <svg class="ico-off"><use href="#i-sound-off"/></svg><svg class="ico-on"><use href="#i-sound-on"/></svg>
+      <span class="sr-only">Звукови ефекти</span><span class="sound-lbl">ЗВУК</span>
+    </button>
+    <button class="btn btn-sm btn-primary nav-cta" type="button" data-quote>Поискай оферта</button>
+    <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span><span class="sr-only">Меню</span></button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ===================== HERO / СТРЕЛБИЩЕ ===================== -->
+<section class="hero" id="hero" aria-label="Начало">
+  <div class="hero-media" data-parallax="0.35">
+    <picture>
+      <source media="(max-width: 820px)" srcset="assets/video/hero-mobile-poster.webp">
+      <img class="hero-poster" src="assets/video/hero-desktop-poster.webp" alt="" fetchpriority="high" width="1280" height="720">
+    </picture>
+  </div>
+  <div class="hero-shade"></div>
+  <svg class="hero-sil sil-1" data-parallax="0.15" aria-hidden="true"><use href="#sil-patrol"/></svg>
+  <svg class="hero-sil sil-2" data-parallax="0.08" aria-hidden="true"><use href="#sil-kneel"/></svg>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="scanbar" aria-hidden="true"></div>
+
+  <!-- Стрелбище: мишени + дупки от куршуми -->
+  <div class="range" id="range" aria-hidden="true">
+    <div class="range-floor"></div>
+  </div>
+
+  <div class="hud-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <p class="boot mono" id="boot" aria-hidden="true"><span class="rec">● REC</span> <span class="boot-text" data-text="&gt; ВРЪЗКАТА Е УСТАНОВЕНА // СЕКТОР WARZONE">&gt; ВРЪЗКАТА Е УСТАНОВЕНА // СЕКТОР WARZONE</span></p>
+      <img class="hero-logo" src="assets/img/logo-full-900.webp" srcset="assets/img/logo-full-520.webp 520w, assets/img/logo-full-900.webp 900w" sizes="(max-width: 820px) 60vw, 300px" alt="Airsoft Field Warzone" width="900" height="707">
+      <h1 class="hero-title stencil"><span>Влез в</span> <span class="accent glitch" data-text="бойната зона">бойната зона</span></h1>
+      <p class="hero-lead">Еърсофт игри, гел бластери и тактически събития, за които ще се разказва години – от тиймбилдинг до залавяне на младоженец.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-primary" type="button" data-quote>Поискай оферта <svg><use href="#i-arrow"/></svg></button>
+        <a class="btn btn-ghost" href="#services">Виж мисиите</a>
+      </div>
+      <p class="hero-hint mono"><span class="hint-desk">⌖ Стреляй по мишените с мишката</span><span class="hint-touch">⌖ Докосни мишените</span></p>
+    </div>
+    <div class="lane" id="lane">
+      <!-- HUD: точки -->
+      <div class="hud hud-score mono" aria-live="polite">
+        <div class="hud-title">// СТРЕЛБИЩЕ</div>
+        <div class="score-main"><span>ТОЧКИ</span><b id="score">0000</b></div>
+        <div class="score-row"><span>ПОПАДЕНИЯ</span><b id="hits">0/0</b></div>
+        <div class="score-row"><span>ТОЧНОСТ</span><b id="acc">—</b></div>
+        <div class="score-row"><span>РЕКОРД</span><b id="best">0</b></div>
+        <div class="streak" id="streak"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HUD: радар + координати -->
+  <div class="hud hud-radar mono" aria-hidden="true">
+    <div class="radar"><div class="radar-sweep"></div><i class="blip b1"></i><i class="blip b2"></i><i class="blip b3"></i></div>
+    <div class="coords">
+      <div><span>GRID</span> <b id="gridX">34T FN 4417</b></div>
+      <div><span>ELEV</span> <b id="gridY">0212 M</b></div>
+      <div><span>ВРЕМЕ</span> <b id="clock">--:--:--</b></div>
+    </div>
+  </div>
+
+  <!-- Отброяване -->
+  <a class="hud hud-next mono" href="#events" id="heroNext">
+    <span class="hud-next-lbl"><i class="dot"></i> СЛЕДВАЩА ОПЕРАЦИЯ</span>
+    <span class="hud-next-title" data-next-title>ПРИЕМАНЕ НА ДАННИ…</span>
+    <span class="hud-next-time" data-countdown-compact>T- --д --:--:--</span>
+  </a>
+</section>
+
+<!-- ===================== 01 КОИ СМЕ НИЕ ===================== -->
+<section class="mission" id="about">
+  <div class="wrap">
+    <header class="mission-head">
+      <p class="mission-meta mono"><span class="code">МИСИЯ 01</span><span>//</span><span>РАЗУЗНАВАНЕ</span><span class="status"><i></i>АКТИВНА</span></p>
+      <h2 class="stencil glitch" data-text="Кои сме ние">Кои сме ние</h2>
+    </header>
+    <div class="about-grid">
+      <div class="about-copy reveal">
+        <p class="lead">Airsoft Field Warzone е екип от хора, които живеят за адреналина на добрата игра. Превръщаме еърсофта в преживяване – с истински сценарии, тактика и много смях.</p>
+        <p>Организираме игри на собствен терен край с. Бутан (обл. Враца) с индустриални постройки и открити зони, както и събития по поръчка – от корпоративни тиймбилдинги и детски рождени дни с гел бластери до сватбени изненади, при които нашите оператори „превземат“ празника.</p>
+        <p>Играем през всички сезони – в жега, дъжд и сняг. Новобранец или ветеран, сам или с цял отбор – тук ще намериш своята мисия.</p>
+        <dl class="intel mono">
+          <div><dt>ТЕРЕН</dt><dd>с. Бутан, обл. Враца – индустриална зона</dd></div>
+          <div><dt>СЕЗОН</dt><dd>12 месеца в годината</dd></div>
+          <div><dt>ЕКИПИРОВКА</dt><dd>Осигуряваме всичко нужно</dd></div>
+          <div><dt>НИВО</dt><dd>От новобранец до ветеран</dd></div>
+        </dl>
+      </div>
+      <div class="about-media reveal">
+        <figure class="photo-frame pf-1" data-parallax="-0.06">
+          <img src="assets/img/group-big-1280.webp" srcset="assets/img/group-big-640.webp 640w, assets/img/group-big-1280.webp 1280w" sizes="(max-width: 820px) 92vw, 520px" alt="Голяма група играчи пред сградата на терена" loading="lazy" decoding="async" width="1280" height="960">
+          <figcaption class="mono">IMG_0347 // ОТРЯДЪТ</figcaption>
+        </figure>
+        <figure class="photo-frame pf-2" data-parallax="0.08">
+          <img src="assets/img/ghillie-640.webp" alt="Снайперист в маскировъчен костюм" loading="lazy" decoding="async" width="640" height="853">
+          <figcaption class="mono">IMG_0412 // СНАЙПЕР</figcaption>
+        </figure>
+        <span class="stamp">КЛАСИФИЦИРАНО</span>
+      </div>
+    </div>
+  </div>
+  <svg class="bg-sil bg-sil-r" data-parallax="0.12" aria-hidden="true"><use href="#sil-aim"/></svg>
+</section>
+
+<!-- ===================== 02 СЪБИТИЯ ===================== -->
+<section class="mission mission-camo" id="events">
+  <div class="wrap">
+    <header class="mission-head">
+      <p class="mission-meta mono"><span class="code">МИСИЯ 02</span><span>//</span><span>ОПЕРАТИВЕН ГРАФИК</span><span class="status"><i></i>НА ЖИВО</span></p>
+      <h2 class="stencil glitch" data-text="Предстоящи събития">Предстоящи събития</h2>
+    </header>
+
+    <div class="countdown reveal" id="countdown">
+      <div class="cd-info">
+        <p class="mono cd-lbl"><i class="dot"></i> СЛЕДВАЩА ОПЕРАЦИЯ ЗАПОЧВА СЛЕД</p>
+        <h3 class="cd-title" data-next-title>Приемане на данни…</h3>
+        <p class="mono cd-date" data-next-date></p>
+      </div>
+      <div class="cd-clock mono" role="timer" aria-live="off">
+        <div><b data-cd="d">--</b><span>ДНИ</span></div>
+        <div><b data-cd="h">--</b><span>ЧАСА</span></div>
+        <div><b data-cd="m">--</b><span>МИН</span></div>
+        <div><b data-cd="s">--</b><span>СЕК</span></div>
+      </div>
+    </div>
+
+    <div class="events-grid" id="eventsGrid" aria-live="polite">
+      <div class="event-card skeleton"></div><div class="event-card skeleton"></div><div class="event-card skeleton"></div>
+    </div>
+    <p class="events-note mono" id="eventsNote" hidden></p>
+  </div>
+</section>
+
+<!-- ===================== 03 УСЛУГИ ===================== -->
+<section class="mission" id="services">
+  <div class="wrap">
+    <header class="mission-head">
+      <p class="mission-meta mono"><span class="code">МИСИЯ 03</span><span>//</span><span>ДОСИЕТА НА МИСИИ</span><span class="status"><i></i>6 ДОСТЪПНИ</span></p>
+      <h2 class="stencil glitch" data-text="Избери своята мисия">Избери своята мисия</h2>
+      <p class="mission-sub">Всяка операция се планира според вашата група, повод и локация. Изберете досие и поискайте оферта.</p>
+      <p class="swipe-hint mono" aria-hidden="true">← ПЛЪЗНИ ЗА ОЩЕ ДОСИЕТА →</p>
+    </header>
+
+    <div class="dossiers">
+      <article class="dossier reveal">
+        <div class="dossier-tab mono">ДОСИЕ № AFW-TB-01</div>
+        <figure class="dossier-img"><img src="assets/img/briefing-640.webp" alt="Инструктор брифира група преди игра" loading="lazy" decoding="async" width="640" height="853"><span class="stamp stamp-sm">СЕКРЕТНО</span></figure>
+        <div class="dossier-body">
+          <p class="mono op-name">ОПЕРАЦИЯ „ЖЕЛЯЗНА ВЕРИГА“</p>
+          <h3>Тиймбилдинг</h3>
+          <p>Изведете екипа от офиса и го превърнете в боен отряд. Комуникация, лидерство и доверие – тествани под обстрел. Сценариите се нагласят спрямо групата – от напълно начинаещи до състезателни.</p>
+          <dl class="dossier-stats mono">
+            <div><dt>ТРУДНОСТ</dt><dd><span class="diff" style="--d:2"></span></dd></div>
+            <div><dt>ИГРАЧИ</dt><dd>8 – 60</dd></div>
+            <div><dt>ОРЪЖИЕ</dt><dd>Еърсофт / гел</dd></div>
+          </dl>
+          <button class="btn btn-primary btn-block" type="button" data-quote="Тиймбилдинг">Поискай оферта</button>
+        </div>
+      </article>
+
+      <article class="dossier reveal">
+        <div class="dossier-tab mono">ДОСИЕ № AFW-BP-02</div>
+        <figure class="dossier-img"><img src="assets/img/pistol-640.webp" alt="Играч в тактическа екипировка се цели с пистолет" loading="lazy" decoding="async" width="640" height="853"><span class="stamp stamp-sm">СЕКРЕТНО</span></figure>
+        <div class="dossier-body">
+          <p class="mono op-name">ОПЕРАЦИЯ „ПОСЛЕДНА СВОБОДА“</p>
+          <h3>Ергенско парти</h3>
+          <p>Последната мисия на младоженеца като свободен човек. Отборни битки, специални задачи за „целта“ и спомени, които ще се разказват на сватбата (или ще се премълчат).</p>
+          <dl class="dossier-stats mono">
+            <div><dt>ТРУДНОСТ</dt><dd><span class="diff" style="--d:3"></span></dd></div>
+            <div><dt>ИГРАЧИ</dt><dd>6 – 30</dd></div>
+            <div><dt>ОРЪЖИЕ</dt><dd>Еърсофт / гел</dd></div>
+          </dl>
+          <button class="btn btn-primary btn-block" type="button" data-quote="Ергенско парти">Поискай оферта</button>
+        </div>
+      </article>
+
+      <article class="dossier reveal">
+        <div class="dossier-tab mono">ДОСИЕ № AFW-HV-03</div>
+        <figure class="dossier-img"><img src="assets/img/escort-team-640.webp" alt="Четирима оператори в пълна екипировка" loading="lazy" decoding="async" width="640" height="960" style="object-position:50% 78%"><span class="stamp stamp-sm">ТОП СЕКРЕТНО</span></figure>
+        <div class="dossier-body">
+          <p class="mono op-name">ОПЕРАЦИЯ „ЦЕЛТА – ЖЕНИХ“</p>
+          <h3>Залавяне на младоженец</h3>
+          <p>Тактически екип в пълна екипировка „арестува“ младоженеца – на ергенското, на работа или пред дома. Дим, драма и много смях. Всичко се координира тайно с приятелите му.</p>
+          <dl class="dossier-stats mono">
+            <div><dt>ТРУДНОСТ</dt><dd><span class="diff" style="--d:5"></span><small>за целта</small></dd></div>
+            <div><dt>ЕКИП</dt><dd>4 – 8 оператора</dd></div>
+            <div><dt>ЛОКАЦИЯ</dt><dd>При вас</dd></div>
+          </dl>
+          <button class="btn btn-primary btn-block" type="button" data-quote="Залавяне на младоженец">Поискай оферта</button>
+        </div>
+      </article>
+
+      <article class="dossier reveal">
+        <div class="dossier-tab mono">ДОСИЕ № AFW-VIP-04</div>
+        <figure class="dossier-img"><img src="assets/img/wedding-escort-640.webp" alt="Оператори ескортират младоженци сред дим" loading="lazy" decoding="async" width="640" height="427"><span class="stamp stamp-sm">VIP</span></figure>
+        <div class="dossier-body">
+          <p class="mono op-name">ОПЕРАЦИЯ „ЕСКОРТ ПРОТОКОЛ“</p>
+          <h3>Сватбен ескорт</h3>
+          <p>Въоръжен ескорт от оператори в пълна екипировка придружава младоженците – посрещане, вход, снимки сред дим. Ефектно, безопасно и абсолютно незабравимо.</p>
+          <dl class="dossier-stats mono">
+            <div><dt>ТРУДНОСТ</dt><dd><span class="diff" style="--d:1"></span></dd></div>
+            <div><dt>ЕКИП</dt><dd>4 – 8 оператора</dd></div>
+            <div><dt>ЛОКАЦИЯ</dt><dd>Вашето място</dd></div>
+          </dl>
+          <button class="btn btn-primary btn-block" type="button" data-quote="Сватбен ескорт">Поискай оферта</button>
+        </div>
+      </article>
+
+      <article class="dossier reveal">
+        <div class="dossier-tab mono">ДОСИЕ № AFW-GB-05</div>
+        <figure class="dossier-img dossier-img-gel" aria-hidden="true">
+          <div class="gel-art">
+            <svg class="gel-target" viewBox="0 0 100 150"><use href="#target"/></svg>
+            <span class="gel-ball g1"></span><span class="gel-ball g2"></span><span class="gel-ball g3"></span><span class="gel-ball g4"></span><span class="gel-ball g5"></span>
+            <p class="mono gel-lbl">ГЕЛ БЛАСТЕРИ // РЕЖИМ: БЕЗОПАСЕН</p>
+          </div>
+          <span class="stamp stamp-sm">ДЕТСКА ЗОНА</span>
+        </figure>
+        <div class="dossier-body">
+          <p class="mono op-name">ОПЕРАЦИЯ „МАЛКИТЕ КОМАНДОСИ“</p>
+          <h3>Детски рожден ден с гел бластери</h3>
+          <p>Гел бластерите стрелят с меки гел топчета, които се разпадат при удар – без боя и без следи. Инструкторите водят децата през мисии, подходящи за възрастта им, а рожденикът е командир.</p>
+          <dl class="dossier-stats mono">
+            <div><dt>ТРУДНОСТ</dt><dd><span class="diff" style="--d:1"></span></dd></div>
+            <div><dt>ИГРАЧИ</dt><dd>6 – 25 деца</dd></div>
+            <div><dt>ОРЪЖИЕ</dt><dd>Гел бластери</dd></div>
+          </dl>
+          <button class="btn btn-primary btn-block" type="button" data-quote="Детски рожден ден с гел бластери">Поискай оферта</button>
+        </div>
+      </article>
+
+      <article class="dossier reveal">
+        <div class="dossier-tab mono">ДОСИЕ № AFW-AS-06</div>
+        <figure class="dossier-img"><img src="assets/img/group-small-640.webp" alt="Отбор играчи с реплики пред терена" loading="lazy" decoding="async" width="640" height="853"><span class="stamp stamp-sm">СЕКРЕТНО</span></figure>
+        <div class="dossier-body">
+          <p class="mono op-name">ОПЕРАЦИЯ „ТЕРЕН WARZONE“</p>
+          <h3>Еърсофт игри</h3>
+          <p>Пълноценни еърсофт игри на нашия терен – индустриални сгради, открити пространства и сценарии за всеки вкус. Елате сами, с приятели или с цял отбор.</p>
+          <dl class="dossier-stats mono">
+            <div><dt>ТРУДНОСТ</dt><dd><span class="diff" style="--d:4"></span></dd></div>
+            <div><dt>ИГРАЧИ</dt><dd>10 – 60+</dd></div>
+            <div><dt>ОРЪЖИЕ</dt><dd>Еърсофт</dd></div>
+          </dl>
+          <button class="btn btn-primary btn-block" type="button" data-quote="Еърсофт игра">Поискай оферта</button>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 04 КАК ПРОТИЧА ===================== -->
+<section class="mission mission-dark" id="process">
+  <div class="wrap">
+    <header class="mission-head">
+      <p class="mission-meta mono"><span class="code">МИСИЯ 04</span><span>//</span><span>БРИФИНГ</span><span class="status"><i></i>ЗАДЪЛЖИТЕЛЕН</span></p>
+      <h2 class="stencil glitch" data-text="Как протича операцията">Как протича операцията</h2>
+    </header>
+    <ol class="route">
+      <li class="waypoint reveal"><span class="wp-n mono">WP-01</span><h3>Запитване</h3><p>Пишете ни или се обадете – повод, дата и приблизителен брой хора.</p></li>
+      <li class="waypoint reveal"><span class="wp-n mono">WP-02</span><h3>План на операцията</h3><p>Подготвяме сценарий и оферта, съобразени с вашата група.</p></li>
+      <li class="waypoint reveal"><span class="wp-n mono">WP-03</span><h3>Пристигане и екипиране</h3><p>Посрещаме ви, раздаваме екипировка и разделяме отборите.</p></li>
+      <li class="waypoint reveal"><span class="wp-n mono">WP-04</span><h3>Инструктаж</h3><p>Правила, безопасност и работа с репликите – кратко и ясно.</p></li>
+      <li class="waypoint reveal"><span class="wp-n mono">WP-05</span><h3>Бойни действия</h3><p>Серия мисии и сценарии под наблюдението на маршал.</p></li>
+      <li class="waypoint reveal"><span class="wp-n mono">WP-06</span><h3>Дебрифинг</h3><p>Обща снимка, разкази за подвизи и обещание за реванш.</p></li>
+    </ol>
+  </div>
+  <svg class="bg-sil bg-sil-l" data-parallax="0.1" aria-hidden="true"><use href="#sil-kneel"/></svg>
+</section>
+
+<!-- ===================== 05 БЕЗОПАСНОСТ ===================== -->
+<section class="mission" id="safety">
+  <div class="wrap">
+    <header class="mission-head">
+      <p class="mission-meta mono"><span class="code">МИСИЯ 05</span><span>//</span><span>ПРОТОКОЛ ЗА БЕЗОПАСНОСТ</span><span class="status status-ok"><i></i>НИВО ЗЕЛЕНО</span></p>
+      <h2 class="stencil glitch" data-text="Безопасност и екипировка">Безопасност и екипировка</h2>
+    </header>
+    <div class="safety-grid">
+      <div class="panel reveal">
+        <h3 class="panel-title mono">// ПРАВИЛА НА ТЕРЕНА</h3>
+        <ul class="checklist">
+          <li><svg><use href="#i-check"/></svg><div><b>Защита на очите – винаги.</b> Очила или маска се носят през цялото време в игровата зона.</div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>Проверка на репликите.</b> Мощността се измерва с хронограф преди играта.</div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>Безопасна зона.</b> Извън играта репликите са без пълнител и на предпазител.</div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>Маршали на терена.</b> Следят за правилата и спират играта при нужда.</div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>Честна игра.</b> При попадение вдигаш ръка и викаш „ХИТ!“.</div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>Инструктаж за всички.</b> Никой не влиза в игра без брифинг.</div></li>
+        </ul>
+      </div>
+      <div class="panel panel-gear reveal">
+        <h3 class="panel-title mono">// ОСИГУРЯВАМЕ</h3>
+        <ul class="gear">
+          <li><span class="mono">01</span>Реплика и муниции</li>
+          <li><span class="mono">02</span>Защитна маска / очила</li>
+          <li><span class="mono">03</span>Тактическа жилетка</li>
+          <li><span class="mono">04</span>Отличителни ленти за отборите</li>
+        </ul>
+        <h3 class="panel-title mono">// ВИЕ НОСИТЕ</h3>
+        <ul class="gear gear-you">
+          <li><span class="mono">01</span>Удобни дрехи с дълъг ръкав</li>
+          <li><span class="mono">02</span>Затворени обувки</li>
+          <li><span class="mono">03</span>Ръкавици (по желание)</li>
+          <li><span class="mono">04</span>Вода и бойно настроение</li>
+        </ul>
+      </div>
+      <figure class="photo-frame safety-photo reveal">
+        <img src="assets/img/snow-640.webp" srcset="assets/img/snow-640.webp 640w, assets/img/snow-1280.webp 1280w" sizes="(max-width: 820px) 92vw, 360px" alt="Играчи в екипировка на заснежения терен" loading="lazy" decoding="async" width="640" height="853">
+        <figcaption class="mono">IMG_0501 // ЗИМНА КАМПАНИЯ</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 06 ГАЛЕРИЯ + TIKTOK ===================== -->
+<section class="mission mission-camo" id="gallery">
+  <div class="wrap">
+    <header class="mission-head">
+      <p class="mission-meta mono"><span class="code">МИСИЯ 06</span><span>//</span><span>ВИЗУАЛНО РАЗУЗНАВАНЕ</span><span class="status"><i></i>ЗАПИС</span></p>
+      <h2 class="stencil glitch" data-text="Галерия">Галерия</h2>
+    </header>
+    <div class="gallery" id="galleryGrid">
+      <a class="g-item g-feature reveal" href="assets/img/escort-action-1920.webp" data-caption="Сватбен ескорт – вход в действие"><img src="assets/img/escort-action-1280.webp" alt="Оператори в действие сред дим" loading="lazy" decoding="async" width="640" height="427"><span class="mono">01</span></a>
+      <a class="g-item g-tall reveal" href="assets/img/briefing-1920.webp" data-caption="Брифинг преди битката"><img src="assets/img/briefing-640.webp" alt="Брифинг на група преди игра" loading="lazy" decoding="async" width="640" height="853"><span class="mono">02</span></a>
+      <a class="g-item g-tall reveal" href="assets/img/ghillie-1920.webp" data-caption="Невидимият снайперист"><img src="assets/img/ghillie-640.webp" alt="Снайперист в маскировъчен костюм" loading="lazy" decoding="async" width="640" height="853"><span class="mono">03</span></a>
+      <a class="g-item g-tall reveal" href="assets/img/snow-1920.webp" data-caption="Зимна кампания"><img src="assets/img/snow-640.webp" alt="Играчи на заснежения терен" loading="lazy" decoding="async" width="640" height="853"><span class="mono">04</span></a>
+      <a class="g-item reveal" href="assets/img/group-big-1920.webp" data-caption="Голямата игра"><img src="assets/img/group-big-640.webp" alt="Голяма група играчи" loading="lazy" decoding="async" width="640" height="480"><span class="mono">05</span></a>
+      <a class="g-item reveal" href="assets/img/wedding-escort-1920.webp" data-caption="Младоженците под охрана"><img src="assets/img/wedding-escort-640.webp" alt="Младоженци с въоръжен ескорт" loading="lazy" decoding="async" width="640" height="427"><span class="mono">06</span></a>
+      <a class="g-item g-tall reveal" href="assets/img/pistol-1920.webp" data-caption="Резервно оръжие"><img src="assets/img/pistol-640.webp" alt="Играч се цели с пистолет" loading="lazy" decoding="async" width="640" height="853"><span class="mono">07</span></a>
+      <a class="g-item g-tall reveal" href="assets/img/escort-team-1920.webp" data-caption="Екипът за ескорт"><img src="assets/img/escort-team-640.webp" style="object-position:50% 80%" alt="Четирима оператори в екипировка" loading="lazy" decoding="async" width="640" height="960"><span class="mono">08</span></a>
+      <a class="g-item g-tall reveal" href="assets/img/group-small-1920.webp" data-caption="Отрядът"><img src="assets/img/group-small-640.webp" alt="Отбор играчи пред терена" loading="lazy" decoding="async" width="640" height="853"><span class="mono">09</span></a>
+    </div>
+
+    <header class="mission-head mission-head-sub">
+      <p class="mission-meta mono"><span class="code">МИСИЯ 06-B</span><span>//</span><span>ВИДЕОНАБЛЮДЕНИЕ</span><span class="status"><i></i>LIVE</span></p>
+      <h2 class="stencil glitch" data-text="Виж ни в действие">Виж ни в действие</h2>
+    </header>
+    <div class="clips-grid" id="clipsGrid"></div>
+    <div class="tiktok-grid" id="tiktokGrid"></div>
+    <div class="tt-cta reveal">
+      <a class="btn btn-ghost" data-tt href="https://www.tiktok.com/@airsoft.field.war" target="_blank" rel="noopener"><svg><use href="#i-tiktok"/></svg> Още видеа в TikTok</a>
+      <a class="btn btn-ghost" data-fb href="https://www.facebook.com/airsoft.warzonee" target="_blank" rel="noopener"><svg><use href="#i-fb"/></svg> Facebook</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 07 ВАУЧЕРИ ===================== -->
+<section class="mission" id="vouchers">
+  <div class="wrap vouchers">
+    <div class="voucher-copy reveal">
+      <header class="mission-head">
+        <p class="mission-meta mono"><span class="code">МИСИЯ 07</span><span>//</span><span>ПРОПУСК ЗА ПОДАРЪК</span><span class="status"><i></i>ДОСТЪПЕН</span></p>
+        <h2 class="stencil glitch" data-text="Ваучери за подарък">Ваучери за подарък</h2>
+      </header>
+      <p class="lead">Подарете адреналин вместо поредната вратовръзка.</p>
+      <p>Ваучерът може да е за еърсофт игра, рожден ден с гел бластери, ергенско или изцяло нова мисия по ваш избор. Изработваме го с име и посвещение – готов за подаряване.</p>
+      <ul class="gear gear-inline">
+        <li><span class="mono">✦</span>Рожден ден</li><li><span class="mono">✦</span>Коледа</li><li><span class="mono">✦</span>Годишнина</li><li><span class="mono">✦</span>Фирмен подарък</li>
+      </ul>
+      <button class="btn btn-primary" type="button" data-quote="Ваучер за подарък">Поискай ваучер <svg><use href="#i-arrow"/></svg></button>
+    </div>
+    <div class="voucher-card reveal" aria-hidden="true">
+      <div class="vc-top mono"><span>AFW // GIFT CLEARANCE</span><span>№ AFW-0001</span></div>
+      <img class="vc-logo" src="assets/img/logo-mark.webp" alt="" width="240" height="154" loading="lazy">
+      <p class="vc-title">ПОДАРЪЧЕН ВАУЧЕР</p>
+      <p class="vc-sub mono">ДОПУСК ДО БОЙНАТА ЗОНА</p>
+      <div class="vc-fields mono">
+        <div><span>НА ИМЕ</span><b>КОДОВО ИМЕ: ______</b></div>
+        <div><span>МИСИЯ</span><b>ПО ИЗБОР</b></div>
+      </div>
+      <div class="vc-bottom"><div class="barcode"></div><span class="stamp stamp-sm">ОДОБРЕНО</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 08 ЧЗВ ===================== -->
+<section class="mission mission-dark" id="faq">
+  <div class="wrap wrap-narrow">
+    <header class="mission-head">
+      <p class="mission-meta mono"><span class="code">МИСИЯ 08</span><span>//</span><span>РАЗПИТ</span><span class="status"><i></i>ОТГОВОРИ</span></p>
+      <h2 class="stencil glitch" data-text="Често задавани въпроси">Често задавани въпроси</h2>
+    </header>
+    <div class="faq">
+      <details class="reveal"><summary><span class="mono">Q-01</span>Боли ли, когато те уцелят?</summary><p>Попадението се усеща като леко щипване – достатъчно, за да разбереш, че си „убит“, но не и да те откаже. Дрехите с дълъг ръкав и ръкавиците намаляват усещането още повече. Гел топчетата при детските игри са още по-меки.</p></details>
+      <details class="reveal"><summary><span class="mono">Q-02</span>Трябва ли да имам собствена екипировка?</summary><p>Не. Осигуряваме реплика, муниции, защитна маска, жилетка и отличителни ленти. Ако имате собствена екипировка, сте добре дошли с нея – репликите минават задължителна проверка.</p></details>
+      <details class="reveal"><summary><span class="mono">Q-03</span>Нужен ли е опит?</summary><p>Абсолютно не. Повечето ни групи са с напълно начинаещи. Преди всяка игра има инструктаж, а сценариите се нагласят според нивото на групата.</p></details>
+      <details class="reveal"><summary><span class="mono">Q-04</span>От каква възраст може да се играе?</summary><p>Зависи от вида на играта – гел бластерите са подходящи за деца, а еърсофтът е за по-големи участници. Уточнете възрастта на групата при запитването и ще предложим подходящ формат.</p></details>
+      <details class="reveal"><summary><span class="mono">Q-05</span>Какво да облека?</summary><p>Удобни дрехи, които не ви е жал да изцапате, с дълъг ръкав, и затворени обувки с добро сцепление. През зимата – топли слоеве.</p></details>
+      <details class="reveal"><summary><span class="mono">Q-06</span>Какво става при лошо време?</summary><p>Играем през всички сезони – дъждът и снегът често правят играта още по-епична. При опасни условия ще се свържем с вас и ще насрочим нова дата.</p></details>
+      <details class="reveal"><summary><span class="mono">Q-07</span>Идвате ли на наша локация?</summary><p>Да – залавянето на младоженец, сватбеният ескорт и някои детски събития се провеждат на мястото, което изберете. Опишете локацията в запитването.</p></details>
+      <details class="reveal"><summary><span class="mono">Q-08</span>Защо на сайта няма цени?</summary><p>Защото всяка мисия е различна – брой участници, продължителност, локация и сценарий. Изпратете запитване и ще получите конкретна оферта, съобразена с вас.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 09 КОНТАКТИ ===================== -->
+<section class="mission" id="contact">
+  <div class="wrap contact">
+    <div class="contact-copy reveal">
+      <header class="mission-head">
+        <p class="mission-meta mono"><span class="code">МИСИЯ 09</span><span>//</span><span>ВРЪЗКА СЪС ЩАБА</span><span class="status"><i></i>ОНЛАЙН</span></p>
+        <h2 class="stencil glitch" data-text="Свържи се с щаба">Свържи се с щаба</h2>
+      </header>
+      <p class="lead">Готови ли сте за мисия? Обадете се, пишете във Viber или изпратете запитване – отговаряме бързо.</p>
+      <div class="contact-btns">
+        <a class="cbtn" data-tel href="tel:+359897047668"><svg><use href="#i-phone"/></svg><span><small class="mono">ОБАДИ СЕ</small><b data-phone-display>+359 897 047 668</b></span></a>
+        <a class="cbtn cbtn-viber" data-viber href="viber://chat?number=%2B359897047668"><svg><use href="#i-viber"/></svg><span><small class="mono">ПИШИ НИ ВЪВ</small><b>Viber</b></span></a>
+        <a class="cbtn cbtn-mail" data-mail href="mailto:airsoft.field.warzone@abv.bg"><svg><use href="#i-mail"/></svg><span><small class="mono">ИМЕЙЛ</small><b class="cbtn-email" data-email-text>airsoft.field.warzone@abv.bg</b></span></a>
+      </div>
+      <div class="socials">
+        <a data-fb href="https://www.facebook.com/airsoft.warzonee" target="_blank" rel="noopener" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
+        <a data-ig href="https://www.instagram.com/airsoft.warzonee" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
+        <a data-tt href="https://www.tiktok.com/@airsoft.field.war" target="_blank" rel="noopener" aria-label="TikTok"><svg><use href="#i-tiktok"/></svg></a>
+        <span class="mono">FB / IG: @airsoft.warzonee<br>TikTok: @airsoft.field.war</span>
+      </div>
+    </div>
+    <div class="panel map-panel reveal">
+      <h3 class="panel-title mono">// КООРДИНАТИ НА ТЕРЕНА</h3>
+      <div class="map" id="map">
+        <button type="button" class="map-facade" id="mapLoad">
+          <span class="map-grid"></span>
+          <span class="map-pin"><svg><use href="#i-pin"/></svg></span>
+          <span class="mono map-coords" data-coords>N 43.65196° / E 23.76328°</span>
+          <span class="btn btn-sm btn-ghost">Покажи картата</span>
+        </button>
+      </div>
+      <div class="map-foot">
+        <p class="address"><svg><use href="#i-pin"/></svg><span><b>Airsoft Field Warzone</b><br><span data-address>Бутан 3326, обл. Враца</span></span></p>
+        <a class="btn btn-sm btn-primary" data-map href="https://share.google/nJLW5PIzwf6ET7Qwc" target="_blank" rel="noopener">Навигирай <svg><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <img src="assets/img/logo-full-520.webp" alt="Airsoft Field Warzone" width="520" height="408" loading="lazy" class="footer-logo">
+    <div class="footer-cols">
+      <nav aria-label="Долна навигация" class="footer-nav">
+        <a href="#services">Услуги</a><a href="#events">Събития</a><a href="#vouchers">Ваучери</a><a href="#faq">ЧЗВ</a><a href="#contact">Контакти</a>
+      </nav>
+      <div class="footer-contacts">
+        <a data-tel href="tel:+359897047668"><svg><use href="#i-phone"/></svg><span data-phone-display>+359 897 047 668</span></a>
+        <a data-mail href="mailto:airsoft.field.warzone@abv.bg"><svg><use href="#i-mail"/></svg><span data-email-text>airsoft.field.warzone@abv.bg</span></a>
+        <a data-map href="https://share.google/nJLW5PIzwf6ET7Qwc" target="_blank" rel="noopener"><svg><use href="#i-pin"/></svg><span data-address>Бутан 3326, обл. Враца</span></a>
+      </div>
+      <div class="socials footer-socials">
+        <a data-fb href="https://www.facebook.com/airsoft.warzonee" target="_blank" rel="noopener" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
+        <a data-ig href="https://www.instagram.com/airsoft.warzonee" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
+        <a data-tt href="https://www.tiktok.com/@airsoft.field.war" target="_blank" rel="noopener" aria-label="TikTok"><svg><use href="#i-tiktok"/></svg></a>
+      </div>
+      <p class="mono">© <span id="year">2026</span> AIRSOFT FIELD WARZONE // ВСИЧКИ ПРАВА ЗАПАЗЕНИ</p>
+      <p class="mono muted">КРАЙ НА ПРЕДАВАНЕТО ▮</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Мобилна лента с бързи действия -->
+<div class="mobile-bar">
+  <a data-tel href="tel:+359897047668"><svg><use href="#i-phone"/></svg>Обади се</a>
+  <a data-viber href="viber://chat?number=%2B359897047668"><svg><use href="#i-viber"/></svg>Viber</a>
+  <button type="button" data-quote>Оферта</button>
+</div>
+
+<!-- Модал: Поискай оферта -->
+<dialog class="modal" id="quoteModal" aria-labelledby="quoteTitle">
+  <div class="modal-box">
+    <button class="modal-x" type="button" data-close aria-label="Затвори">✕</button>
+    <p class="mono modal-kicker">// ЗАЯВКА ЗА МИСИЯ</p>
+    <h2 id="quoteTitle" class="stencil">Поискай оферта</h2>
+    <p class="q-service mono"><span>МИСИЯ:</span> <b data-q-service>По ваш избор</b></p>
+    <p class="q-lead">Свържете се с нас по удобния за вас начин – кажете ни повод, дата и брой участници и ще ви изготвим оферта.</p>
+    <div class="q-btns">
+      <a class="cbtn" data-q-tel href="tel:+359897047668"><svg><use href="#i-phone"/></svg><span><small class="mono">ОБАДИ СЕ</small><b data-phone-display>+359 897 047 668</b></span></a>
+      <a class="cbtn cbtn-viber" data-q-viber href="viber://chat?number=%2B359897047668"><svg><use href="#i-viber"/></svg><span><small class="mono">ПИШИ ВЪВ VIBER</small><b>Viber чат</b></span></a>
+      <a class="cbtn cbtn-mail" data-q-mail href="mailto:airsoft.field.warzone@abv.bg"><svg><use href="#i-mail"/></svg><span><small class="mono">ИЗПРАТИ ИМЕЙЛ</small><b class="cbtn-email" data-q-email-text>airsoft.field.warzone@abv.bg</b></span></a>
+    </div>
+    <p class="q-note mono">Viber и имейлът се отварят с готов текст за избраната мисия.</p>
+  </div>
+</dialog>
+
+<!-- Лайтбокс -->
+<dialog class="lightbox" id="lightbox" aria-label="Галерия">
+  <button class="modal-x" type="button" data-close aria-label="Затвори">✕</button>
+  <button class="lb-nav lb-prev" type="button" aria-label="Предишна">‹</button>
+  <figure><img alt=""><figcaption class="mono"></figcaption></figure>
+  <button class="lb-nav lb-next" type="button" aria-label="Следваща">›</button>
+</dialog>
+
+<div class="glitch-veil" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
