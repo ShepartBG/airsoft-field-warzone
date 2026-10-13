@@ -57,42 +57,57 @@ export function initAk({ reduce }) {
     p.text = t;
   }
 
-  function render(progress) {
-    // 0–0.46: разглобяване (части една по една), 0.46–0.54: пауза, 0.54–1: сглобяване в обратен ред
-    let active = -1, mode;
+  // phase: 'dis' = разглобяване, 'as' = сглобяване; t: 0..1; secs – реално изминало време
+  let lastActive = -1;
+  function render(phase, t, secs = 0) {
+    let active = -1;
     for (const p of parts) {
-      let t;
-      if (progress <= 0.5) t = clamp((progress - 0.04) / 0.42 * N - p.i);
-      else t = 1 - clamp((progress - 0.54) / 0.42 * N - (N - 1 - p.i));
-      const e = ease(t);
+      // частите се движат една след друга; при сглобяване – в обратен ред
+      const k = phase === 'dis' ? clamp(t * N - p.i) : 1 - clamp(t * N - (N - 1 - p.i));
+      const e = ease(k);
       p.el.setAttribute('transform', `translate(${(p.dx * e).toFixed(1)} ${(p.dy * e).toFixed(1)}) rotate(${(p.rot * e).toFixed(1)} ${p.cx} ${p.cy - 150})`);
-      p.text.style.opacity = clamp((t - 0.6) / 0.4).toFixed(2);
-      if (t > 0 && t < 1) active = p.i;
+      p.text.style.opacity = clamp((k - 0.6) / 0.4).toFixed(2);
+      if (k > 0 && k < 1) active = p.i;
     }
-    if (progress < 0.04) mode = 'ГОТОВНОСТ';
-    else if (progress < 0.46) mode = 'РАЗГЛОБЯВАНЕ';
-    else if (progress < 0.54) mode = 'НЕПЪЛНО РАЗГЛОБЕН';
-    else if (progress < 0.97) mode = 'СГЛОБЯВАНЕ';
-    else mode = 'ГОТОВ ЗА БОЙ';
-    ui.mode.textContent = mode;
-    ui.mode.dataset.state = progress >= 0.97 ? 'ok' : progress < 0.04 ? '' : 'run';
-    // учебен таймер: 0 → 9.8 сек разглобяване, после 0 → 12.4 сек сглобяване
-    const secs = progress <= 0.5 ? clamp((progress - 0.04) / 0.42) * 9.8 : clamp((progress - 0.54) / 0.42) * 12.4;
+    if (active !== lastActive && active >= 0) sound.clack();
+    lastActive = active;
+    const done = t >= 1;
+    ui.mode.textContent = phase === 'dis' ? (done ? 'НЕПЪЛНО РАЗГЛОБЕН' : t > 0 ? 'РАЗГЛОБЯВАНЕ' : 'ГОТОВНОСТ') : (done ? 'ГОТОВ ЗА БОЙ' : 'СГЛОБЯВАНЕ');
+    ui.mode.dataset.state = phase === 'as' && done ? 'ok' : t > 0 ? 'run' : '';
     ui.timer.textContent = `00:${secs.toFixed(2).padStart(5, '0')}`;
-    ui.step.textContent = active >= 0 ? `ЕТАП ${active + 1}/${N}: ${STEPS[active]}` : progress < 0.04 ? 'СКРОЛНИ ЗА СТАРТ ↓' : progress >= 0.97 ? '✔ АВТОМАТЪТ Е СГЛОБЕН' : '— ВСИЧКИ ЧАСТИ СА ИЗВАДЕНИ —';
-    ui.bar.style.transform = `scaleX(${progress.toFixed(3)})`;
+    ui.step.textContent = active >= 0 ? `ЕТАП ${active + 1}/${N}: ${STEPS[active]}`
+      : t === 0 ? 'НАТИСНИ БУТОНА ЗА СТАРТ' : phase === 'dis' ? '— ВСИЧКИ ЧАСТИ СА ИЗВАДЕНИ —' : '✔ АВТОМАТЪТ Е СГЛОБЕН';
+    ui.bar.style.transform = `scaleX(${(phase === 'dis' ? t / 2 : 0.5 + t / 2).toFixed(3)})`;
   }
 
-  if (reduce) { scene.classList.add('ak-static'); render(0.5); return; }
-
-  let ticking = false, visible = false;
-  const update = () => {
-    ticking = false;
-    const r = scene.getBoundingClientRect();
-    const total = r.height - innerHeight;
-    render(clamp(-r.top / (total > 0 ? total : 1)));
+  // натискане: разглобява / сглобява (или по самия автомат)
+  const btn = scene.querySelector('[data-ak-btn]');
+  const DUR = { dis: 3200, as: 3800 };
+  let state = 'assembled', raf = 0;
+  function run(phase) {
+    cancelAnimationFrame(raf);
+    state = phase === 'dis' ? 'busy-dis' : 'busy-as';
+    btn.disabled = true;
+    btn.textContent = phase === 'dis' ? 'Разглобяване…' : 'Сглобяване…';
+    const finish = () => {
+      state = phase === 'dis' ? 'apart' : 'assembled';
+      btn.disabled = false;
+      btn.textContent = phase === 'dis' ? 'Натисни, за да сглобиш' : 'Натисни, за да разглобиш отново';
+    };
+    if (reduce) { render(phase, 1, 0); finish(); return; }
+    const t0 = performance.now();
+    const tick = (now) => {
+      const t = clamp((now - t0) / DUR[phase]);
+      render(phase, t, (now - t0) / 1000);
+      if (t < 1) raf = requestAnimationFrame(tick); else finish();
+    };
+    raf = requestAnimationFrame(tick);
+  }
+  const toggle = () => {
+    if (state === 'assembled') run('dis');
+    else if (state === 'apart') run('as');
   };
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) update(); }).observe(scene);
-  addEventListener('scroll', () => { if (visible && !ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-  render(0);
+  btn.addEventListener('click', toggle);
+  svg.addEventListener('click', toggle);
+  render('dis', 0);
 }

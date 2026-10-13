@@ -863,3 +863,40 @@ a.tt-facade { text-decoration: none; }
 }
 
 .menu-open .mobile-bar, .menu-open .cookie { display: none; }
+
+/* ---------- v3: плакат на събитието, АК с бутон, фирма ---------- */
+.op-brief { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); }
+.op-media { grid-row: 1 / span 2; display: block; background: #050604; text-decoration: none; }
+.op-media::after { display: none; }
+.op-media img { position: static; width: 100%; height: auto; filter: none; transition: transform .5s var(--ease); }
+.op-media:hover img { transform: scale(1.02); }
+.op-zoom { position: absolute; right: 12px; bottom: 12px; font-size: .66rem; letter-spacing: .12em; color: var(--text); background: rgba(0, 0, 0, .7); border: 1px solid var(--line-strong); padding: 6px 9px; }
+.op-media:hover .op-zoom { border-color: var(--orange); color: var(--orange); }
+.op-program { grid-column: 2; border-top: 1px dashed var(--line-strong); }
+.op-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.op-steps .op-final { grid-column: 1 / -1; }
+
+.ak-scene { height: auto; padding: clamp(80px, 11vw, 140px) 0; overflow: hidden; }
+.ak-sticky { position: static; height: auto; display: block; padding: 0; overflow: visible; }
+.ak-svg { max-height: 560px; cursor: pointer; }
+.ak-ctrl { display: flex; justify-content: center; margin-top: 22px; }
+.ak-btn { min-width: 300px; }
+.ak-btn:disabled { opacity: .75; }
+
+.footer-legal { font-size: .78rem !important; line-height: 1.6; max-width: 760px; }
+.footer-legal b { color: var(--khaki); font-weight: 500; }
+
+@media (max-width: 1060px) {
+  .op-brief { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); }
+  .op-steps { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .op-brief { grid-template-columns: 1fr; }
+  .op-media { grid-row: auto; aspect-ratio: auto; }
+  .op-program { grid-column: 1; }
+  .ak-scene { height: auto; }
+  .ak-btn { min-width: 0; width: 100%; }
+}
+.op-media img { position: sticky; top: calc(var(--nav-h) + 12px); }
+.op-zoom { top: 12px; bottom: auto; z-index: 1; }
+@media (max-width: 820px) { .op-media img { position: static; } }

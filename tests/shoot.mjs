@@ -113,19 +113,17 @@ async function run(label, ctxOpts, { cpu = 1 } = {}) {
   await page.keyboard.press('Escape');
   await page.waitForTimeout(300);
 
-  // разглобяване на АК при скрол
-  const akT = await page.evaluate(async () => {
-    const s = document.getElementById('drill');
-    const top = s.getBoundingClientRect().top + scrollY;
-    const read = () => document.querySelector('.ak-part[data-part="2"]').getAttribute('transform');
-    scrollTo({ top: top + (s.offsetHeight - innerHeight) * 0.5, behavior: 'instant' });
-    await new Promise((r) => setTimeout(r, 400));
-    const mid = read(); const mode = document.querySelector('[data-ak-mode]').textContent;
-    return { mid, mode };
-  });
-  await page.waitForTimeout(200);
-  await page.screenshot({ path: `${OUT}/${label}-ak.png` });
-  check(`[${label}] АК се разглобява при скрол`, /translate\(0(\.0)? -80/.test(akT.mid), `${akT.mode}: ${akT.mid}`);
+  // разглобяване на АК с бутон
+  await page.locator('[data-ak-btn]').scrollIntoViewIfNeeded();
+  await page.locator('[data-ak-btn]').click();
+  await page.waitForTimeout(3600);
+  const read = () => page.evaluate(() => ({ tr: document.querySelector('.ak-part[data-part="2"]').getAttribute('transform'), mode: document.querySelector('[data-ak-mode]').textContent, btn: document.querySelector('[data-ak-btn]').textContent }));
+  const apart = await read();
+  await page.locator('#drill').screenshot({ path: `${OUT}/${label}-ak.png` });
+  await page.locator('[data-ak-btn]').click();
+  await page.waitForTimeout(4200);
+  const back = await read();
+  check(`[${label}] АК: разглобява и сглобява с бутон`, /translate\(0(\.0)? -80/.test(apart.tr) && /translate\(0(\.0)? 0(\.0)?\)/.test(back.tr) && back.mode === 'ГОТОВ ЗА БОЙ', `${apart.mode} → ${back.mode}; бутон: ${back.btn}`);
 
   // галерия: още снимки
   await page.locator('#galleryMore').scrollIntoViewIfNeeded();

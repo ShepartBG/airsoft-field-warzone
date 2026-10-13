@@ -101,6 +101,14 @@ export const sound = {
     const g = ctx.createGain(); env(g, t, 0.9, 1.3, 0.004);
     s.connect(f).connect(g).connect(master); s.start(t); s.stop(t + 1.5);
   },
+  // метално щракване при вадене/поставяне на част от автомата
+  clack() {
+    if (!enabled || !ensure()) return;
+    const t = ctx.currentTime;
+    burst(t, 0.03, 0.45, 'bandpass', 3200, 3);
+    osc('square', 900, 620, t, 0.05, 0.08);
+    osc('sine', 260, 120, t + 0.005, 0.06, 0.25);
+  },
   ui() {
     if (!enabled || !ensure()) return;
     const t = ctx.currentTime;

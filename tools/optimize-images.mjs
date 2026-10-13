@@ -26,6 +26,7 @@ const photos = {
   'operator': '16.jpg',
   'squad-talk': '17.jpg',
   'rookie': '18.jpg',
+  'poster-dostoyniyat': 'poster-dostoyniyat.png',
 };
 const widths = [640, 1280, 1920];
 // Изрязвания: escort-team – без табелата на ресторанта отгоре
