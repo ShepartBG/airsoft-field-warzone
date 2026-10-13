@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<!-- Картинката, която се показва при споделяне на линка (Facebook, Viber, Messenger…).
+     Прави се с: node tools/build-og.mjs  ->  assets/img/og-image.jpg (1200x630) -->
+<link rel="stylesheet" href="../css/fonts.css">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1200px; height: 630px; overflow: hidden; background: #0a0b08; font-family: 'Exo 2', sans-serif; color: #e7e5d6; }
+  .og { position: relative; width: 1200px; height: 630px; overflow: hidden;
+    background: url(../assets/img/camo.svg) 0 0 / 520px, #131710; }
+  .og::before { content: ''; position: absolute; inset: 0; background: rgba(8, 10, 6, .72); }
+  .photo { position: absolute; right: 0; top: 0; width: 640px; height: 630px; overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 34%); mask-image: linear-gradient(90deg, transparent 0, #000 34%); }
+  .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; filter: saturate(.85) contrast(1.1) brightness(.85); }
+  .photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(10, 11, 8, .85)), repeating-linear-gradient(0deg, rgba(0, 0, 0, .18) 0 1px, transparent 1px 3px); }
+  .reticle { position: absolute; right: 230px; top: 150px; width: 190px; height: 190px; border: 2px solid rgba(255, 107, 26, .85); border-radius: 50%; box-shadow: 0 0 24px rgba(255, 107, 26, .45); }
+  .reticle::before, .reticle::after { content: ''; position: absolute; background: rgba(255, 107, 26, .85); }
+  .reticle::before { left: 50%; top: -26px; bottom: -26px; width: 2px; margin-left: -1px; }
+  .reticle::after { top: 50%; left: -26px; right: -26px; height: 2px; margin-top: -1px; }
+  .dot { position: absolute; right: 322px; top: 242px; width: 8px; height: 8px; border-radius: 50%; background: #ff6b1a; box-shadow: 0 0 12px #ff6b1a; }
+  .lock { position: absolute; right: 196px; top: 116px; font: 700 13px 'JetBrains Mono', monospace; color: #ff6b1a; letter-spacing: .14em; }
+  .copy { position: absolute; left: 64px; top: 52px; width: 640px; }
+  .logo { width: 210px; height: auto; filter: drop-shadow(0 8px 20px rgba(0, 0, 0, .8)); margin-left: -8px; }
+  .kicker { margin-top: 18px; font: 700 15px 'JetBrains Mono', monospace; letter-spacing: .2em; color: #9aa66a; }
+  .kicker b { background: #ff6b1a; color: #120800; padding: 3px 8px; margin-right: 10px; }
+  h1 { margin-top: 14px; font: 400 76px/1 'Russo One', sans-serif; text-transform: uppercase; text-shadow: 0 6px 30px rgba(0, 0, 0, .8); }
+  h1 span { display: block; color: #ff6b1a; }
+  .tags { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .tags i { font-style: normal; font: 600 17px 'Exo 2', sans-serif; padding: 7px 13px; background: rgba(0, 0, 0, .55); border: 1px solid rgba(207, 201, 162, .3); }
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 64px;
+    background: rgba(5, 6, 4, .9); border-top: 2px solid #ff6b1a; font: 700 22px 'JetBrains Mono', monospace; letter-spacing: .06em; }
+  .bar .url { color: #ff6b1a; font-size: 26px; }
+  .bar .rec { color: #ff3d24; }
+  .corner { position: absolute; width: 34px; height: 34px; border: 3px solid #ff6b1a; }
+  .c1 { top: 18px; left: 18px; border-right: 0; border-bottom: 0; }
+  .c2 { top: 18px; right: 18px; border-left: 0; border-bottom: 0; }
+</style>
+</head>
+<body>
+  <div class="og">
+    <div class="photo"><img src="../assets/img/ivy-1280.webp" alt=""></div>
+    <div class="reticle"></div><div class="dot"></div><div class="lock">TARGET LOCKED</div>
+    <div class="copy">
+      <img class="logo" src="../assets/img/logo-full-520.webp" alt="">
+      <p class="kicker"><b>// МИСИЯ</b>С. БУТАН · ОБЛ. ВРАЦА</p>
+      <h1>Влез в <span>бойната зона</span></h1>
+      <div class="tags"><i>Еърсофт игри</i><i>Гел бластери</i><i>Тиймбилдинг</i><i>Ергенски партита</i></div>
+    </div>
+    <div class="bar"><span class="url">AIRSOFTWARZONE.BG</span><span class="rec">● REC</span><span>+359 897 047 668</span></div>
+    <i class="corner c1"></i><i class="corner c2"></i>
+  </div>
+</body>
+</html>

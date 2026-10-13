@@ -43,11 +43,7 @@ for (const [name, file] of Object.entries(photos)) {
       .webp({ quality: w >= 1920 ? 62 : 70 })
       .toFile(path.join(OUT, `${name}-${w}.webp`));
   }
-  // jpg за социални мрежи (og:image) само за основната
-  if (name === 'escort-action') {
-    await sharp(path.join(SRC, file)).rotate().resize(1200, 630, { fit: 'cover' })
-      .jpeg({ quality: 78, mozjpeg: true }).toFile(path.join(OUT, 'og-image.jpg'));
-  }
+  // картинката за споделяне (og-image.jpg) се прави отделно: node tools/build-og.mjs
   console.log('✓', name);
 }
 
