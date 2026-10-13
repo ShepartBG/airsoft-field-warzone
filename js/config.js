@@ -9,6 +9,9 @@ export const CONFIG = {
   instagram: 'https://www.instagram.com/airsoft.warzonee',
   tiktokProfile: 'https://www.tiktok.com/@airsoft.field.war',
 
+  // Записване за игри – профилът на терена в BattleBooking
+  booking: 'https://www.battlebooking.bg/field/warzone',
+
   // Локация на терена
   address: 'Бутан 3326, обл. Враца',
   mapUrl: 'https://share.google/nJLW5PIzwf6ET7Qwc',
@@ -30,11 +33,18 @@ export const CONFIG = {
 
   // ---------------- „ВИЖ НИ В ДЕЙСТВИЕ“ ----------------
   // Клипове от assets/video (правят се с: node tools/build-clips.mjs action)
+  // wide: true = хоризонтален клип
   actionClips: [
-    { id: 'cqb', title: 'Щурм на руините' },
+    { id: 'promo', title: 'Избягай от скучното ежедневие', tag: 'ВИДЕО ОБРЪЩЕНИЕ' },
+    { id: 'cqb', title: 'Залавяне на заложник' },
+    { id: 'open', title: 'Атака през откритото', wide: true },
     { id: 'mg', title: 'Картечно гнездо' },
+    { id: 'pointa', title: 'Превземане на точка А' },
     { id: 'hall', title: 'Бой в халето' },
+    { id: 'ambush', title: 'Засада в руините' },
+    { id: 'heavy', title: 'Патрул с картечница' },
     { id: 'patrol', title: 'Отрядът настъпва' },
+    { id: 'black', title: 'Операторът в черно' },
     { id: 'push', title: 'Пробив през храстите' },
     { id: 'crowd', title: 'Голямата игра' },
   ],

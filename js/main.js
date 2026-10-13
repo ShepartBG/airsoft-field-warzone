@@ -3,7 +3,16 @@ import { sound } from './sound.js';
 import { initRange } from './range.js';
 import { initEvents } from './events.js';
 import { initForms, openQuote } from './form.js';
-import { initHeroVideo, initTikTok, initClips, initMap } from './media.js';
+import { initHeroVideo, initTikTok, initClips, initMap, openTikTok } from './media.js';
+import { grenadeTo, initAk } from './fx.js';
+
+// При презареждане – винаги най-горе (без автоматичен скок към запомнена позиция или #котва)
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+const navType = performance.getEntriesByType('navigation')[0]?.type;
+if (navType === 'reload' || navType === 'back_forward' || !location.hash) {
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  scrollTo(0, 0);
+}
 
 const root = document.documentElement;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -26,6 +35,7 @@ $$('[data-mail]').forEach((a) => (a.href = `mailto:${CONFIG.email}`));
 $$('[data-email-text]').forEach((n) => (n.textContent = CONFIG.email));
 $$('[data-address]').forEach((n) => (n.textContent = CONFIG.address));
 $$('[data-map]').forEach((a) => (a.href = CONFIG.mapUrl));
+$$('[data-booking]').forEach((a) => (a.href = CONFIG.booking));
 $('#year').textContent = new Date().getFullYear();
 
 // ---------- Модули ----------
@@ -35,6 +45,7 @@ initTikTok(CONFIG);
 initMap(CONFIG);
 initHeroVideo(CONFIG, { reduce, mobile });
 initRange({ reduce, mobile });
+initAk({ reduce });
 
 // ---------- Звук ----------
 const soundBtn = $('#soundBtn');
@@ -59,26 +70,28 @@ function closeMenu() {
   links.classList.remove('open');
   burger.setAttribute('aria-expanded', 'false');
   document.body.style.overflow = '';
+  document.body.classList.remove('menu-open');
 }
 burger.addEventListener('click', () => {
   const open = !links.classList.contains('open');
   links.classList.toggle('open', open);
   burger.setAttribute('aria-expanded', String(open));
   document.body.style.overflow = open ? 'hidden' : '';
+  document.body.classList.toggle('menu-open', open);
   sound.ui();
 });
 addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
 
-// глич преход при навигация между секциите
-const veil = $('.glitch-veil');
+// преход между секциите: граната (адресът остава чист – без #котва)
 document.addEventListener('click', (e) => {
   const a = e.target.closest('a[href^="#"]');
   if (!a) return;
+  const id = a.getAttribute('href').slice(1);
+  const target = id && document.getElementById(id);
+  e.preventDefault();
   closeMenu();
-  if (a.getAttribute('href').length > 1 && !reduce) {
-    veil.classList.remove('on'); void veil.offsetWidth; veil.classList.add('on');
-    sound.ui();
-  }
+  if (target) grenadeTo(target, { reduce });
+  else scrollTo({ top: 0, behavior: reduce ? 'instant' : 'smooth' });
 });
 
 // активна връзка в менюто
@@ -112,7 +125,7 @@ const io = new IntersectionObserver((entries) => {
 const observe = (el) => io.observe(el);
 $$('.reveal, .mission-head').forEach(observe);
 
-initEvents(CONFIG, { openQuote, observe });
+initEvents(CONFIG, { observe });
 
 // ---------- Паралакс (само десктоп, без reduced-motion) ----------
 if (!reduce && !mobile) {
@@ -165,16 +178,42 @@ if (!reduce && boot) {
   setTimeout(type, 300);
 }
 
+// ---------- Галерия: „Покажи още“ ----------
+const moreBtn = $('#galleryMore');
+moreBtn?.addEventListener('click', () => {
+  $('#galleryGrid').classList.add('show-all');
+  moreBtn.parentElement.remove();
+  sound.ui();
+});
+
+// ---------- TikTok видеа (бутони в ЧЗВ и др.) ----------
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-tiktok]');
+  if (b) { e.preventDefault(); openTikTok(b.dataset.tiktok, CONFIG); sound.ui(); }
+});
+
+// ---------- Бисквитки ----------
+const cookie = $('#cookie');
+let seen = false;
+try { seen = localStorage.getItem('afw-cookie') === '1'; } catch {}
+if (!seen) setTimeout(() => (cookie.hidden = false), 1200);
+$('#cookieOk').addEventListener('click', () => {
+  cookie.hidden = true;
+  try { localStorage.setItem('afw-cookie', '1'); } catch {}
+});
+
 // ---------- Лайтбокс ----------
 const lb = $('#lightbox'), lbImg = $('img', lb), lbCap = $('figcaption', lb);
 const gItems = $$('.g-item');
 let cur = 0;
 function show(i) {
-  cur = (i + gItems.length) % gItems.length;
+  const all = $('#galleryGrid').classList.contains('show-all');
+  const n = all ? gItems.length : gItems.filter((g) => !g.classList.contains('g-more')).length;
+  cur = (i + n) % n;
   const a = gItems[cur];
   lbImg.src = a.href;
   lbImg.alt = a.querySelector('img').alt;
-  lbCap.textContent = `${String(cur + 1).padStart(2, '0')} / ${String(gItems.length).padStart(2, '0')} // ${a.dataset.caption || ''}`;
+  lbCap.textContent = `${String(cur + 1).padStart(2, '0')} / ${String(n).padStart(2, '0')} // ${a.dataset.caption || ''}`;
 }
 gItems.forEach((a, i) => a.addEventListener('click', (e) => { e.preventDefault(); show(i); lb.showModal(); sound.ui(); }));
 $('.lb-prev', lb).addEventListener('click', () => show(cur - 1));

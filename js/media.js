@@ -31,12 +31,13 @@ export function initClips(cfg) {
   let playing = null;
   clips.forEach((c, i) => {
     const card = document.createElement('div');
-    card.className = 'tt-card clip-card reveal';
+    card.className = 'tt-card clip-card reveal' + (c.wide ? ' clip-wide' : '');
     card.style.setProperty('--rd', `${(i % 3) * 90}ms`);
     const poster = `assets/video/action-${c.id}.webp`;
+    const [w, h] = c.wide ? [1024, 576] : [576, 1024];
     card.innerHTML = `<button type="button" class="tt-facade clip-facade" aria-label="Пусни видео: ${c.title}">
-        <img src="${poster}" alt="" loading="lazy" decoding="async" width="576" height="1024">
-        <span class="clip-rec mono"><i></i> REC // CAM-${String(i + 1).padStart(2, '0')}</span>
+        <img src="${poster}" alt="" loading="lazy" decoding="async" width="${w}" height="${h}">
+        <span class="clip-rec mono"><i></i> ${c.tag || 'REC // CAM-' + String(i + 1).padStart(2, '0')}</span>
         <span class="tt-play"><svg><use href="#i-play"/></svg></span>
         <span class="clip-title"><b class="stencil">${c.title}</b><small class="mono">НАТИСНИ ЗА ВИДЕО СЪС ЗВУК</small></span>
       </button>`;
@@ -52,6 +53,39 @@ export function initClips(cfg) {
   });
   // спира видеото, когато излезе от екрана
   new IntersectionObserver(([e]) => { if (!e.isIntersecting && playing) playing.pause(); }).observe(grid);
+
+  // бутони за превъртане на лентата
+  const rail = grid.parentElement;
+  const prev = rail.querySelector('.rail-prev'), next = rail.querySelector('.rail-next');
+  const step = () => Math.max(260, grid.clientWidth * 0.8);
+  prev.addEventListener('click', () => grid.scrollBy({ left: -step(), behavior: 'smooth' }));
+  next.addEventListener('click', () => grid.scrollBy({ left: step(), behavior: 'smooth' }));
+  const sync = () => {
+    prev.disabled = grid.scrollLeft < 8;
+    next.disabled = grid.scrollLeft + grid.clientWidth > grid.scrollWidth - 8;
+  };
+  grid.addEventListener('scroll', sync, { passive: true });
+  addEventListener('resize', sync);
+  sync();
+}
+
+// TikTok видео в прозорец (плейърът се зарежда чак при натискане)
+export function openTikTok(id, cfg) {
+  const dlg = document.getElementById('ttModal');
+  const frame = dlg.querySelector('.tt-frame');
+  const f = document.createElement('iframe');
+  f.src = `https://www.tiktok.com/player/v1/${id}?autoplay=1&music_info=1&description=1&rel=0`;
+  f.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture';
+  f.title = 'TikTok видео';
+  frame.replaceChildren(f);
+  const profile = (cfg.tiktokProfile || 'https://www.tiktok.com').replace(/\/$/, '');
+  dlg.querySelector('.tt-open').href = `${profile}/video/${id}`;
+  if (!dlg.dataset.ready) {
+    dlg.dataset.ready = '1';
+    dlg.addEventListener('click', (e) => { if (e.target === dlg || e.target.closest('[data-close]')) dlg.close(); });
+    dlg.addEventListener('close', () => frame.replaceChildren());
+  }
+  dlg.showModal();
 }
 
 function tiktokId(url) {

@@ -89,6 +89,18 @@ export const sound = {
       osc('square', 1240, 1230, t + 0.01, 0.06, 0.05);
     }
   },
+  // Взрив на граната: дълбок удар + разпадащ се шум
+  explosion() {
+    if (!enabled || !ensure()) return;
+    const t = ctx.currentTime;
+    osc('sine', 120, 28, t, 0.7, 0.9);
+    osc('triangle', 70, 30, t, 0.5, 0.5);
+    const s = ctx.createBufferSource(); s.buffer = noise; s.loop = true;
+    const f = ctx.createBiquadFilter(); f.type = 'lowpass';
+    f.frequency.setValueAtTime(5000, t); f.frequency.exponentialRampToValueAtTime(140, t + 1.2);
+    const g = ctx.createGain(); env(g, t, 0.9, 1.3, 0.004);
+    s.connect(f).connect(g).connect(master); s.start(t); s.stop(t + 1.5);
+  },
   ui() {
     if (!enabled || !ensure()) return;
     const t = ctx.currentTime;

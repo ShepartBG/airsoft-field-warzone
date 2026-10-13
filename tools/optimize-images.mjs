@@ -19,6 +19,13 @@ const photos = {
   'escort-action': '8.jpg',
   'wedding-escort': '9.jpg',
   'escort-team': '10.jpg',
+  'marshal': '12.jpg',
+  'ivy': '13.jpg',
+  'banner-crew': '14.jpg',
+  'briefing-wide': '15.jpg',
+  'operator': '16.jpg',
+  'squad-talk': '17.jpg',
+  'rookie': '18.jpg',
 };
 const widths = [640, 1280, 1920];
 // Изрязвания: escort-team – без табелата на ресторанта отгоре

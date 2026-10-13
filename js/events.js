@@ -91,7 +91,7 @@ function longDate(ev) {
   return ev.hasTime ? `${s}, ${fmt({ hour: '2-digit', minute: '2-digit' }).format(ev.date)} ч.` : s;
 }
 
-function card(ev, openQuote) {
+function card(ev) {
   const a = document.createElement('article');
   a.className = 'event-card reveal';
   const days = Math.ceil((ev.date - Date.now()) / 864e5);
@@ -116,10 +116,10 @@ function card(ev, openQuote) {
     l.innerHTML = 'Детайли <svg><use href="#i-arrow"/></svg>';
     body.append(l);
   }
-  const b = document.createElement('button');
-  b.type = 'button'; b.className = 'btn btn-sm btn-primary';
-  b.textContent = 'Запиши се';
-  b.addEventListener('click', () => openQuote('Записване за събитие', `Записване за: ${ev.title} (${longDate(ev)})`, ev.date));
+  // записването става през BattleBooking
+  const b = document.createElement('a');
+  b.className = 'btn btn-sm btn-primary'; b.href = booking; b.target = '_blank'; b.rel = 'noopener';
+  b.innerHTML = '<svg><use href="#i-ticket"/></svg> Запиши се';
   const btns = document.createElement('div');
   btns.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap';
   btns.append(b, ...body.querySelectorAll('a.btn'));
@@ -127,10 +127,41 @@ function card(ev, openQuote) {
   return a;
 }
 
-export async function initEvents(cfg, { openQuote, observe }) {
+// Събития, описани направо в index.html (data-event) – напр. „Достойният път“.
+// Скриват се сами, след като минат.
+function htmlEvents() {
+  const now = Date.now();
+  return [...document.querySelectorAll('[data-event]')].map((el) => {
+    const date = new Date(el.dataset.date);
+    const end = el.dataset.end ? new Date(el.dataset.end) : new Date(date.getTime() + 6 * 36e5);
+    if (end.getTime() < now) { el.remove(); return null; }
+    el.querySelector('[data-ics]')?.addEventListener('click', () => downloadIcs(el, date, end));
+    return { date, end, hasTime: true, title: el.dataset.title, place: el.dataset.place };
+  }).filter(Boolean);
+}
+
+function downloadIcs(el, start, end) {
+  const f = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  const esc = (s) => String(s).replace(/[,;\\]/g, (m) => '\\' + m);
+  const lead = el.querySelector('.op-lead')?.textContent.trim() || '';
+  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Airsoft Field Warzone//BG', 'BEGIN:VEVENT',
+    `UID:${f(start)}-afw@airsoft-field-warzone`, `DTSTAMP:${f(new Date())}`, `DTSTART:${f(start)}`, `DTEND:${f(end)}`,
+    `SUMMARY:${esc(el.dataset.title)}`, `LOCATION:${esc(el.dataset.place)}`, `DESCRIPTION:${esc(lead)}`,
+    'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+  a.download = 'dostoyniyat-pat.ics';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+let booking = '#';
+
+export async function initEvents(cfg, { observe }) {
+  booking = cfg.booking || '#';
+  const featured = htmlEvents();
   const grid = document.getElementById('eventsGrid');
-  const note = document.getElementById('eventsNote');
-  let rows = null, demo = false;
+  let rows = null;
   if (cfg.eventsSheetUrl) {
     try {
       const r = await fetch(sheetCsvUrl(cfg.eventsSheetUrl), { cache: 'no-store' });
@@ -141,7 +172,6 @@ export async function initEvents(cfg, { openQuote, observe }) {
     } catch (e) { console.warn('Google Таблица:', e); }
   }
   if (!rows) {
-    demo = true;
     try { rows = parseCSV(await (await fetch('data/events.csv', { cache: 'no-store' })).text()); } catch { rows = []; }
   }
   const now = Date.now();
@@ -150,21 +180,15 @@ export async function initEvents(cfg, { openQuote, observe }) {
     .sort((a, b) => a.date - b.date);
 
   grid.replaceChildren();
-  if (!upcoming.length) {
-    grid.innerHTML = `<div class="events-empty"><b>Няма насрочени операции</b>Следете ни във Facebook или поискайте частна игра за вашата група.</div>`;
-  } else {
-    upcoming.slice(0, 6).forEach((ev, i) => {
-      const c = card(ev, openQuote);
-      c.style.setProperty('--rd', `${i * 90}ms`);
-      grid.append(c);
-      observe(c);
-    });
-  }
-  if (demo && /^(localhost|127\.|192\.168\.|10\.)/.test(location.hostname)) {
-    note.hidden = false;
-    note.textContent = '// ДЕМО ДАННИ – свържете Google Таблица в js/config.js (eventsSheetUrl). Тази бележка се вижда само локално.';
-  }
-  startCountdown(upcoming.find((e) => e.date.getTime() > now) || upcoming[0]);
+  grid.hidden = !upcoming.length;
+  upcoming.slice(0, 6).forEach((ev, i) => {
+    const c = card(ev);
+    c.style.setProperty('--rd', `${i * 90}ms`);
+    grid.append(c);
+    observe(c);
+  });
+  const all = [...featured, ...upcoming].sort((a, b) => a.date - b.date);
+  startCountdown(all.find((e) => e.date.getTime() > now) || all[0]);
 }
 
 function startCountdown(ev) {

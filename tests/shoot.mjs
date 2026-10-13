@@ -29,11 +29,11 @@ async function run(label, ctxOpts, { cpu = 1 } = {}) {
   const page = await ctx.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  page.on('console', (m) => { if (m.type() === 'error' && !/google|gstatic/.test(m.location().url || '')) errors.push(m.text()); });
+  page.on('console', (m) => { if (m.type() === 'error' && !/google|gstatic|tiktok/.test(m.location().url || '') && !/tiktok/i.test(m.text())) errors.push(m.text()); });
   page.on('requestfailed', (r) => {
     // видеото се тегли на части – браузърът сам прекъсва първата заявка (ERR_ABORTED), това е нормално
     if (/\.mp4$/.test(r.url()) && /ABORTED/.test(r.failure()?.errorText || '')) return;
-    if (!/fonts.g|google.|gstatic|tel:|viber:/.test(r.url())) errors.push('FAILED ' + r.url());
+    if (!/fonts.g|google.|gstatic|tiktok|tel:|viber:/.test(r.url())) errors.push('FAILED ' + r.url());
   });
   if (cpu > 1) { const cdp = await ctx.newCDPSession(page); await cdp.send('Emulation.setCPUThrottlingRate', { rate: cpu }); }
 
@@ -46,6 +46,8 @@ async function run(label, ctxOpts, { cpu = 1 } = {}) {
   check(`[${label}] зареждане`, true, `load ${Date.now() - t0} ms, LCP ${lcp} ms`);
   await page.waitForTimeout(1200);
   await page.screenshot({ path: `${OUT}/${label}-hero.png` });
+  check(`[${label}] съобщение за бисквитки`, await page.locator('#cookie').isVisible());
+  await page.locator('#cookieOk').click();
   if (label === 'mobile') { await page.evaluate(() => scrollTo(0, 420)); await page.waitForTimeout(400); await page.screenshot({ path: `${OUT}/${label}-range.png` }); await page.evaluate(() => scrollTo(0, 0)); }
 
   // хоризонтален скрол
@@ -82,9 +84,58 @@ async function run(label, ctxOpts, { cpu = 1 } = {}) {
   // събития
   await page.locator('#events').scrollIntoViewIfNeeded();
   await page.waitForTimeout(600);
-  const evCount = await page.locator('#eventsGrid .event-card:not(.skeleton)').count();
   const cd = await page.textContent('[data-cd="d"]');
-  check(`[${label}] събития + отброяване`, evCount > 0 && /\d\d/.test(cd), `${evCount} събития, ${cd} дни`);
+  const cdTitle = await page.textContent('.cd-title');
+  check(`[${label}] „Достойният път“ + отброяване`, (await page.locator('#opDostoyniyat').isVisible()) && /\d\d/.test(cd) && cdTitle.includes('Достойният'), `${cdTitle}, ${cd} дни`);
+  const bk = await page.getAttribute('.booking [data-booking]', 'href');
+  check(`[${label}] линк към BattleBooking`, bk === 'https://www.battlebooking.bg/field/warzone', bk);
+  const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 3000 }).catch(() => null), page.locator('[data-ics]').click()]);
+  check(`[${label}] „Добави в календара“ сваля .ics`, !!dl && dl.suggestedFilename().endsWith('.ics'), dl?.suggestedFilename());
+
+  // граната: преход от менюто, адресът остава без #котва
+  await page.evaluate(() => scrollTo(0, 0));
+  await page.waitForTimeout(300);
+  if (label === 'mobile') { await page.locator('#burger').click(); await page.waitForTimeout(300); }
+  await page.locator('#navLinks a[href="#faq"]').click();
+  await page.waitForTimeout(620);
+  await page.screenshot({ path: `${OUT}/${label}-grenade.png` });
+  await page.waitForTimeout(1100);
+  const faqTop = await page.evaluate(() => document.getElementById('faq').getBoundingClientRect().top);
+  check(`[${label}] граната → прескача до ЧЗВ`, Math.abs(faqTop) < 120 && !page.url().includes('#'), `top ${Math.round(faqTop)}px, url ${page.url()}`);
+
+  // TikTok бутон в ЧЗВ
+  await page.locator('#faq details').first().locator('summary').click();
+  await page.locator('#faq [data-tiktok="7630874910860037398"]').click();
+  await page.waitForTimeout(400);
+  const ttSrc = await page.getAttribute('#ttModal iframe', 'src').catch(() => '');
+  check(`[${label}] TikTok видео от ЧЗВ`, (await page.locator('#ttModal[open]').count()) === 1 && ttSrc.includes('7630874910860037398'));
+  await page.screenshot({ path: `${OUT}/${label}-tiktok.png` });
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(300);
+
+  // разглобяване на АК при скрол
+  const akT = await page.evaluate(async () => {
+    const s = document.getElementById('drill');
+    const top = s.getBoundingClientRect().top + scrollY;
+    const read = () => document.querySelector('.ak-part[data-part="2"]').getAttribute('transform');
+    scrollTo({ top: top + (s.offsetHeight - innerHeight) * 0.5, behavior: 'instant' });
+    await new Promise((r) => setTimeout(r, 400));
+    const mid = read(); const mode = document.querySelector('[data-ak-mode]').textContent;
+    return { mid, mode };
+  });
+  await page.waitForTimeout(200);
+  await page.screenshot({ path: `${OUT}/${label}-ak.png` });
+  check(`[${label}] АК се разглобява при скрол`, /translate\(0(\.0)? -80/.test(akT.mid), `${akT.mode}: ${akT.mid}`);
+
+  // галерия: още снимки
+  await page.locator('#galleryMore').scrollIntoViewIfNeeded();
+  await page.locator('#galleryMore').click();
+  await page.waitForTimeout(500);
+  check(`[${label}] „Покажи още снимки“`, (await page.locator('#galleryGrid .g-item:visible').count()) === 16);
+
+  // без външни шрифтове
+  const ext = await page.evaluate(() => performance.getEntriesByType('resource').filter((r) => /fonts\.g/.test(r.name)).length);
+  check(`[${label}] шрифтовете са локални`, ext === 0);
 
   // цени никъде
   const priceHit = await page.evaluate(() => /(\d+\s?(лв|лева|€|евро|eur|bgn))|цена:/i.test(document.body.innerText));
@@ -156,6 +207,15 @@ async function run(label, ctxOpts, { cpu = 1 } = {}) {
   await page.evaluate(() => scrollTo(0, 0));
   await revealAll(page);
   await page.screenshot({ path: `${OUT}/${label}-full.png`, fullPage: true });
+
+
+  // презареждане → най-горе
+  await page.evaluate(() => scrollTo(0, document.body.scrollHeight / 2));
+  await page.waitForTimeout(300);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForTimeout(900);
+  const y = await page.evaluate(() => scrollY);
+  check(`[${label}] презареждане връща най-горе`, y === 0 && !(await page.locator('#cookie').isVisible()), `scrollY ${y}`);
 
   check(`[${label}] без JS грешки`, errors.length === 0, errors.slice(0, 3).join(' | '));
   await browser.close();

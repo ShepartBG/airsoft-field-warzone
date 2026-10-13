@@ -7,7 +7,7 @@ const OUT = 'dist';
 await rm(OUT, { recursive: true, force: true });
 await mkdir(OUT, { recursive: true });
 
-for (const p of ['index.html', 'css', 'js', 'data', 'assets/img', 'assets/sfx']) await cp(p, path.join(OUT, p), { recursive: true });
+for (const p of ['index.html', 'privacy.html', 'css', 'js', 'data', 'assets/img', 'assets/sfx', 'assets/fonts']) await cp(p, path.join(OUT, p), { recursive: true });
 // само готовите уеб видеа – без суровите клипове в assets/video/raw
 await mkdir(path.join(OUT, 'assets/video'), { recursive: true });
 for (const f of await readdir('assets/video')) {
