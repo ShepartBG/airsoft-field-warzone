@@ -5,6 +5,12 @@
   "name": "airsoftwarzone",
   "main": "worker.js",
   "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "airsoftwarzone.bg", "custom_domain": true },
+    { "pattern": "www.airsoftwarzone.bg", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
