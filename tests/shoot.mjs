@@ -129,7 +129,7 @@ async function run(label, ctxOpts, { cpu = 1 } = {}) {
   await page.locator('#galleryMore').scrollIntoViewIfNeeded();
   await page.locator('#galleryMore').click();
   await page.waitForTimeout(500);
-  check(`[${label}] „Покажи още снимки“`, (await page.locator('#galleryGrid .g-item:visible').count()) === 16);
+  check(`[${label}] „Покажи още снимки“`, (await page.locator('#galleryGrid .g-item:visible').count()) === 15);
 
   // без външни шрифтове
   const ext = await page.evaluate(() => performance.getEntriesByType('resource').filter((r) => /fonts\.g/.test(r.name)).length);

@@ -25,7 +25,6 @@ const photos = {
   'briefing-wide': '15.jpg',
   'operator': '16.jpg',
   'squad-talk': '17.jpg',
-  'rookie': '18.jpg',
   'poster-dostoyniyat': 'poster-dostoyniyat.png',
 };
 const widths = [640, 1280, 1920];
